@@ -1,23 +1,26 @@
 const express = require("express");
 const cors = require("cors");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const pokemonRoutes = require("./routes/pokemonRoutes");
-
 const connectDB = require("./db");
 
-const PORT = process.env.PORT; 
+const PORT = process.env.PORT;
+
 const app = express();
 
-app.use("/api", pokemonRoutes);
-
-connectDB();
-
+// Middlewares
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Rotas
+app.use("/api", pokemonRoutes);
+
+// Banco
+connectDB();
+
 app.listen(PORT, () => {
- console.log(`Servidor escutando a porta ${PORT}`);
+  console.log(`Servidor escutando a porta ${PORT}`);
 });
