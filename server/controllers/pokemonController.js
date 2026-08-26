@@ -20,9 +20,32 @@ async function createPokemon(req, res) {
 
 async function listPokemon(req, res) {
  try {
-   const pokemons = await Pokemon.find();
+  const { name, type, minLevel, sortBy, order = "asc", page = 1, limit = 10 } = req.query;
+  const filter = {};
+
+  if (name) {
+    filter.name = new RegExp(name, "i");
+  }
+
+  if (type) {
+    const typesArray = Array.isArray(type) ? type : type.split(",").map(t => t.trim());
+    filter.type = { $in: typesArray };
+  }
+
+  if (minLevel) {
+    filter.level = { $gte: Number(minLevel) };
+  }
+
+  const sortOptions = {};
+
+  if (sortBy) {
+    sortOptions[sortBy] = order === "desc" ? -1 : 1;
+  }
+  
+   const pokemons = await Pokemon.find(filter).sort(sortOptions).skip((page - 1) * limit).limit(Number(limit));
    res.status(200).json(pokemons);
  } catch (error) {
+   console.error("Erro ao listar Pokemons:", error.message);
    res.status(500).json({ error: "Erro ao listar Pokemons" });
  }
 }
