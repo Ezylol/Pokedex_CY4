@@ -6,6 +6,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<PokemonList />} />
+        <Route path="/create" element={<PokemonForm />} />
       </Routes>
     </BrowserRouter>
   )
